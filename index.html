@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoClicker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <div class="container">
+    <h1 class="title">AutoClicker</h1>
+    <div class="button-group">
+      <input type="number" id="interval" class="interval-input" value="100" min="10" />
+      <button id="startStopBtn" class="action-button">Start</button>
+    </div>
+    <div class="setting-item">
+      <label for="keybind">Keybind: </label>
+      <input type="text" id="keybind" class="interval-input" placeholder="Press a key" readonly />
+      <button id="resetKeybindBtn" class="action-button">Reset Keybind</button>
+    </div>
+    <div class="setting-item">
+      <label for="theme-toggle">Light/Dark Mode</label>
+      <input type="checkbox" id="theme-toggle" />
+    </div>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut, shell } = require('electron');
+const Renderer = require('electron/renderer');
 const path = require('path');
 const Store = require('electron-store').default;
-const robot = require('robotjs'); // Make sure you have robotjs installed
+const robot = require('robotjs');
 
 const store = new Store();
 let mainWindow;
@@ -9,39 +10,49 @@ let isRunning = false;
 let intervalId = null;
 let keybind = store.get('keybind');
 
-// Function to create the window
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    minWidth: 465,
+    minHeight: 627,
+    width: 465,
+    height: 627,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
     },
   });
 
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
+  mainWindow.setMenu(null);
   mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(() => {
   createWindow();
 
-  // Register global shortcut keybind if it exists
   if (keybind) {
     globalShortcut.register(keybind, () => {
-      toggleAutoclicker(); // Toggle the autoclicker on keypress
+      if (mainWindow) {
+        mainWindow.webContents.send('request-interval');
+      }
     });
   }
 
-  // Handle the button click to toggle autoclicker
-  ipcMain.on('toggle-autoclicker', () => {
-    toggleAutoclicker();
+  ipcMain.on('send-interval', (event, interval) => {
+    toggleAutoclicker(interval);
   });
+  
+  ipcMain.on('toggle-autoclicker', (event, interval) => {
+    toggleAutoclicker(interval);
+  });  
 
-  // Handle setting a new keybind from renderer process
   ipcMain.on('set-keybind', (event, newKeybind) => {
     if (keybind) {
-      globalShortcut.unregister(keybind); // Unregister the old keybind
+      globalShortcut.unregister(keybind);
     }
 
     keybind = newKeybind;
@@ -52,7 +63,7 @@ app.whenReady().then(() => {
       });
     }
 
-    store.set('keybind', newKeybind); // Save new keybind to storage
+    store.set('keybind', newKeybind);
   });
 
   app.on('activate', () => {
@@ -63,39 +74,33 @@ app.whenReady().then(() => {
 });
 
 app.on('will-quit', () => {
-  globalShortcut.unregisterAll(); // Clean up global shortcuts
+  globalShortcut.unregisterAll();
 });
 
-// Function to toggle autoclicker
-function toggleAutoclicker() {
+function toggleAutoclicker(interval) {
   isRunning = !isRunning;
 
-  // Update UI in renderer
   if (mainWindow) {
     mainWindow.webContents.send('autoclicker-status', isRunning);
   }
 
   if (isRunning) {
-    console.log("Autoclicker started");
-    // Start clicking at the specified interval
-    startClicking();
+    console.log("Autoclicker started. Interval = ",interval);
+    startClicking(interval);
   } else {
     console.log("Autoclicker stopped");
-    // Stop the clicking process
     stopClicking();
   }
 }
 
-function startClicking() {
-  const interval = 100; // Default interval if none provided
+function startClicking(interval) {
+  const delay = Number(interval) || 1;
   intervalId = setInterval(() => {
-    // Simulate a left mouse click
     robot.mouseClick();
-  }, interval);
+  }, delay);
 }
 
 function stopClicking() {
-  // Clear the interval to stop clicking
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;

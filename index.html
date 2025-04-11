@@ -3,24 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AutoClicker</title>
+  <title>Atomic's AutoClicker</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="dark">
   <div class="container">
-    <h1 class="title">AutoClicker</h1>
+    <h1 class="title">Atomic's AutoClicker</h1>
+    <div class="setting-title">
+      <p id="cps">Predicted CPS per second:</p>
+    </div>
+    <div class="setting-title">
+      <p id="info-1">Input is in ms (min is 1):</p>
+    </div>
     <div class="button-group">
-      <input type="number" id="interval" class="interval-input" value="100" min="10" />
-      <button id="startStopBtn" class="action-button">Start</button>
+      <div class="input-container">
+        <input type="number" id="interval" class="interval-input" value="10" min="1" />
+        <button id="startStopBtn" class="action-button">Start Clicking</button>
+      </div> 
+    </div>
+    <div class="setting-title">
+      <p id="Keybind-Text">Keybind:</p>
     </div>
     <div class="setting-item">
-      <label for="keybind">Keybind: </label>
-      <input type="text" id="keybind" class="interval-input" placeholder="Press a key" readonly />
-      <button id="resetKeybindBtn" class="action-button">Reset Keybind</button>
+      <div class="input-container">
+        <input type="text" id="keybind" class="interval-input" placeholder="Press a key" readonly />
+        <button id="resetKeybindBtn" class="action-button">Clear Binding</button>
+      </div>
     </div>
     <div class="setting-item">
-      <label for="theme-toggle">Light/Dark Mode</label>
+      <label for="theme-toggle">Light Mode</label>
       <input type="checkbox" id="theme-toggle" />
+    </div>
+    <div class="setting-title">
+      <p id="aBD=25">Made by: @atomictyler - Atomic();</p>
+    </div>
+    <div class="button-row">
+      <a href="https://discord.gg/38hGSYrPyj" target="_blank" class="image-button">
+        <img data-dark="icons/discord-dark.png" data-light="icons/discord-light.png" alt="Discord" class="image" />
+      </a>
+      <a href="https://atomictyler.dev" target="_blank" class="image-button">
+        <img data-dark="icons/www-dark.png" data-light="icons/www-light.png" alt="Website" class="image" />
+      </a>
+      <a href="https://ko-fi.com" target="_blank" class="image-button">
+        <img data-dark="icons/kofi-dark.png" data-light="icons/kofi-light.png" alt="Ko-Fi" class="image" />
+      </a>      
     </div>
   </div>
   <script src="renderer.js"></script>
